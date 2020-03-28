@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    
+   
+  </head>
+<body bgcolor="lightblue">
+<center>
+         <h1>LOGIN HERE</h1>
+      <form action="/logincheck" method="POST">
+        <input type="text" name="username" id="username" placeholder="Username"/><p></p><br></br>
+       <input type="text" name="password" id="password" placeholder="Password"/><p></p><br></br>
+       <input type="submit" value="submit" /> 
+       <button type="button" onclick="location.href = '/changepassword'">Change password</button><p></p><br></br>
+       <p style="color:red;"><%= message %></p>
+      
+       </form>
+    </center>
+</body>
+</html>
