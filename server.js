@@ -12,7 +12,6 @@ const request = require('request-promise')
 const mongooseclient=require('mongoose-client')
 const expressvalidator = require('express-validator')
 const port=process.env.port || 8080
-const forwardingAddress="https://ed093a51.ngrok.io";
 var path=require('path');
 const whatsapps=require('./routes/whatsapprouter')
 //const postcontroller=require('../controllers/post')
