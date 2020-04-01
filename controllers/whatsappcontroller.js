@@ -1,7 +1,7 @@
 const whatsapp = require('../models/whatsapp')
 const createprov = require('../models/form')
-const accountSid = 'ACba18bb96068d2b0d7947c7ef2a9a6248';
-const authToken = 'd1602f68373944fc04fb2aa9d12d1025';
+const accountSid = 'ACe5d43b4d1d7723d1f61247911699c8a9';
+const authToken = '3bea42a9b151f81bfd7957be48baf7aa';
 const client = require('twilio')(accountSid, authToken);
 const _ = require('lodash')
 const sessionStorage = require('node-sessionstorage')
@@ -15,32 +15,37 @@ const session=require('express-session')
 
 
 
-const whatsapplist = (req, res) => {
-    console.log(req.body)
-    console.log('comment',req.body.comment)
-    console.log("funworking")
-    var whatsno = '+918826362630';
-    // messegecount='0';
+const whatsapplist = async (req, res) => {
+    console.log(req.body.Body)
+    var data=[];
+    data.push(req.body.Body.slice(0, 4).toUpperCase())
+   data.push(req.body.Body.slice(0, 3).toUpperCase())
+   data.push(req.body.Body.slice(0, 11).toUpperCase())
+   var username= req.body.Body.slice(4, 20).toUpperCase();
+   console.log(data)
+   for(var i=0;i<data.length;i++)
+   {
+   if(data[i]=='JOIN')
+   {
 
-    var fromm = 'whatsapp:+14155238886';
-    //var too = 'whatsapp:'+`${req.body.to}`;
-    var too = 'whatsapp:+919599392531';
-    var bodyy = req.body.comment.toString();
-    var clientid = '5e3b9d4e1fceb93d4e1f5523';
-    var cusid = 'cus123';
-    var a = 0;
+       console.log("iff")
+       var user =  await  createprov.findOne({ 'username': req.body.Body.slice(4, 20)}).exec();
+       if(!user)
+       {
+          client.messages
+          .create({
+             from: req.body.To,
+             body: `invalid seller id please contact your seller`,
+             to: req.body.From
+           })
+          .then(message => console.log(message.sid));
+          
+       }
+       else
+       {
+var query = { 'client_id': username, 'whatsappno': req.body.From.slice(10, 22) },
 
-    let message = client.messages
-        .create({
-            body: bodyy,
-            from: fromm,
-            to: too
-        })
-        .then(message => console.log('messege sid issss',message.sid));
-
-    var query = { 'client_id': clientid, 'whatsappno': whatsno },
-
-        update = { id: cusid },
+        update = { id: username },
         options = { upsert: true, new: true, setDefaultsOnInsert: true };
 
     // Find the document
@@ -51,14 +56,101 @@ const whatsapplist = (req, res) => {
         }
         else {
 
-            result.message_count = result.message_count + 1;
-            result.save();
+           
             console.log(result);
-            res.redirect('/whatsappdatafetch');    
+           // res.redirect('/whatsappdatafetch');    
         }
 
 
     });
+       client.messages
+       .create({
+          from: req.body.To,
+          body: `*********Thanks for joining us*********
+          
+           Instructions for using our services:
+
+          1. For new details type new with your serviceid (example  newmohit460)
+          2. For replacement type replacement with your service id (replacementmohit460)`,
+          to: req.body.From
+        })
+       .then(message => console.log(message.sid));
+    }
+   }
+   else if(data[i]=='NEW')
+   {
+    var user =  await  whatsapp.findOne({ 'whatsappno': req.body.From.slice(10, 22),'client_id':req.body.Body.slice(3, 20).toUpperCase()}).exec();
+   
+ 
+     if(!user)
+     {
+        client.messages
+        .create({
+           from: req.body.To,
+           body: `You are not a member kindly register yourself or contact seller`,
+           to: req.body.From
+         })
+        .then(message => console.log(message.sid));
+        
+     }
+     if(user.message_count<='3')
+     {
+    client.messages
+    .create({
+       from: req.body.To,
+       body: `
+       
+       id and password is chauhanvishal555@gmail.com:ejonierfjnr
+
+       And please follow our conditions:-
+
+       1. Dont open in browser open in app only.
+       2. Don't change language or anything in the account even password also.
+       3. Don't share I'd and password with others.
+       4. Don't create new profile and don't change profile names.
+       6. (if your account Language is different then do not change the language .. use search bar to search your content and watch it).      
+       7. Dont logout after watching content keep login.
+       8. Don't check or open account section.`,
+       to: req.body.From
+     })
+    .then(message => console.log(message.sid));
+    user.message_count=user.message_count+1;
+    user.save();
+     }
+
+   }
+   else if(data[i]=='REPLACEMENT')
+   {
+    var user =  await  whatsapp.findOne({ 'whatsappno': req.body.From.slice(10, 22),'client_id':req.body.Body.slice(11, 30).toUpperCase()}).exec();
+   
+ 
+     if(!user)
+     {
+        client.messages
+        .create({
+           from: req.body.To,
+           body: `You are not a member kindly register yourself or contact seller`,
+           to: req.body.From
+         })
+        .then(message => console.log(message.sid));
+        
+     }
+     if(user.message_count<='3')
+     {
+    client.messages
+    .create({
+       from: req.body.To,
+       body: `
+       id and password is chauhanvishal555@gmail.com:ejonierfjnr
+       please follow our conditions given above `,
+       to: req.body.From
+     })
+    .then(message => console.log(message.sid));
+    user.message_count=user.message_count+1;
+    user.save();
+     }
+   }
+}
 }
 const whatsappdatafetch = (req, res) => {
     
