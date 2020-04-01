@@ -12,6 +12,7 @@ const request = require('request-promise')
 const mongooseclient=require('mongoose-client')
 const expressvalidator = require('express-validator')
 const port=process.env.port || 8080
+const forwardingAddress="https://ab8ade94.ngrok.io";
 var path=require('path');
 const whatsapps=require('./routes/whatsapprouter')
 //const postcontroller=require('../controllers/post')
@@ -148,8 +149,11 @@ console.log(" db connected")}).catch((err)=>console.log(`eror is ${err}`))
 //       status:"****"
 //     })
 //   })
-  app.get('/',(req,res)=>{
+  app.get('/login',(req,res)=>{
     res.render('login.ejs',{message:""})
+  })
+  app.get('/',(req,res)=>{
+    res.render('createprovider.ejs')
   })
 app.get('/changepassword',(req,res)=>{
   res.render("changepassword.ejs", {
