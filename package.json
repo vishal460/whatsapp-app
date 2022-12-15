@@ -40,7 +40,7 @@
     "sessionstorage": "^0.1.0",
     "shopify-buy": "^2.9.0",
     "twilio": "^3.39.3",
-    "twilio-chat": "^3.3.4"
+    "twilio-chat": "^6.0.0"
   },
   "devDependencies": {}
 }
